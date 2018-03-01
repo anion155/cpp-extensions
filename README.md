@@ -1,6 +1,8 @@
 C++ extensions by anion155
 ==========
 
+Some C++ extensions used in my projects.
+
 Contains Qbs Module in Product.
 
 ## Usage
