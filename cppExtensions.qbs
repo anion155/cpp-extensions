@@ -3,6 +3,7 @@ import 'Validators.js' as Validators
 
 Product {
     id: cppextProduct
+    version: '0.1.1'
     // type: [linkage + 'library']
     // property string linkage: 'static'
 
