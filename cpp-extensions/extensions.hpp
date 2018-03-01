@@ -1,3 +1,35 @@
 #pragma once
 
+#if defined (ANION155s_CPP_EXTENSIONS_NO_NAMESPACE)
+#  if defined (ANION155s_CPP_EXTENSIONS_NAMESPACE)
+#    undef ANION155s_CPP_EXTENSIONS_NAMESPACE
+#  endif
+#else
+#  if !defined (ANION155s_CPP_EXTENSIONS_NAMESPACE)
+#    define ANION155s_CPP_EXTENSIONS_NAMESPACE cppext
+#  endif
+#endif
+
+#ifdef ANION155s_CPP_EXTENSIONS_NAMESPACE
+#  define ANION155s_CPP_EXTENSIONS_NAMESPACE_BEGIN namespace ANION155s_CPP_EXTENSIONS_NAMESPACE {
+#  define ANION155s_CPP_EXTENSIONS_NAMESPACE_END }
+#else
+#  define ANION155s_CPP_EXTENSIONS_NAMESPACE_BEGIN
+#  define ANION155s_CPP_EXTENSIONS_NAMESPACE_END
+#endif
+
+#define SIGNALS_SIGC 1
+#define SIGNALS_QT 2
+
+#ifndef SIGNALS
+#  if defined (SIGCXX_SIGCXX_H)
+#    define SIGNALS SIGNALS_SIGC
+#  elif defined (QT_VERSION)
+#    define SIGNALS_QT
+#  endif
+#endif // SIGNALS
+
+#define IS_SIGNALS_SIGC (SIGNALS == SIGNALS_SIGC)
+#define IS_SIGNALS_QT (SIGNALS == SIGNALS_QT)
+
 #include <cpp-extensions/Property.hpp>

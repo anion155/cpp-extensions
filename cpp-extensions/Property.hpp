@@ -3,12 +3,23 @@
 #include <utility>
 #include <cpp-extensions/extensions.hpp>
 
+#if IS_SIGNALS_SIGC
 # include <sigc++/sigc++.h>
+#elif IS_SIGNALS_QT
+# include <QObject>
+#endif
 
-namespace cppext {
+ANION155s_CPP_EXTENSIONS_NAMESPACE_BEGIN
 
 template <typename T>
-class Property {
+class Property
+#if IS_SIGNALS_QT
+    : public QObject
+{
+  Q_OBJECT
+#else
+{
+#endif
   using field_type = T;
   field_type m_field;
 
@@ -25,12 +36,20 @@ public:
   const field_type &get() const { return m_field; }
   Property &set(const field_type &value) {
     m_field = value;
+#if IS_SIGNALS_SIGC
     s_changed(m_field);
+#elif IS_SIGNALS_QT
+    emit changed(m_field);
+#endif
     return *this;
   }
   Property &set(field_type &&value) {
     m_field = std::forward<field_type>(value);
+#if IS_SIGNALS_SIGC
     s_changed(m_field);
+#elif IS_SIGNALS_QT
+    emit changed(m_field);
+#endif
     return *this;
   }
 
@@ -58,6 +77,7 @@ public:
 
   field_type operator ->() { return get(); }
 
+#if IS_SIGNALS_SIGC
 public:
   using onchanged_t = sigc::signal<void, field_type>;
   using onchanged_slot = typename onchanged_t::slot_type;
@@ -71,5 +91,9 @@ public:
   onchanged_iterator onchanged(onchanged_slot &&slot) {
     return s_changed.connect(std::forward<onchanged_slot>(slot));
   }
+#elif IS_SIGNALS_QT
+public:
+  void changed(field_type value) Q_SIGNAL;
+#endif
 };
-}
+ANION155s_CPP_EXTENSIONS_NAMESPACE_END
