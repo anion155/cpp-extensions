@@ -34,7 +34,8 @@ var PropertyValidator = (function (superClass) {
       propertyName, propertyValue,
       function (value) {
         return allowedValues.indexOf(value) >= 0;
-      }, 'Property value must be one of this ' + JSON.stringify(allowedValues)
+      }, 'Property value must be one of this '
+      + JSON.stringify(allowedValues) + ' but it is ' + propertyValue
     );
   }
 

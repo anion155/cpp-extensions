@@ -1,33 +1,18 @@
 import qbs
-import 'Validators.js' as Validators
+import Validators
 
 Product {
-    id: cppextProduct
-    version: '0.1.1'
-    // type: [linkage + 'library']
-    // property string linkage: 'static'
-
-    Depends { name: 'cpp' }
-    cpp.includePaths: [ './' ]
-
     files: [
         '**/*.h', '**/*.c',
         '**/*.hpp', '**/*.cpp',
     ]
 
-    property string signals: cppextModule.signals || 'sigc'
-    property string namespace: cppextModule.namespace
-
-    Depends { name: 'sigc'; condition: signals == 'sigc' }
-    Depends { name: 'Qt.core'; condition: signals == 'qt' }
-
-    cpp.defines: cppextModule.cpp.defines
-
     Export {
         id: cppextModule
+        version: '0.1.1'
 
         Depends { name: 'cpp' }
-        cpp.includePaths: [ './' ]
+        cpp.includePaths: [ '../' ]
 
         property string signals
         property string namespace
@@ -52,7 +37,10 @@ Product {
 
         validate: {
             var validator = new Validators.PropertyValidator('anion155-cpp-extensions');
-            validator.addRegexpValidator('namespace', namespace, /^[a-zA-Z_][a-zA-Z0-9_]*$/, 'Namespace must be valid identifier');
+            validator.addRegexpValidator(
+                        'namespace', namespace,
+                        /^([a-zA-Z_]([a-zA-Z0-9_]*::)?[a-zA-Z0-9_]*|)$/,
+                        'Namespace must be valid identifier or identifiers separated by \'::\'');
             validator.setRequiredProperty('signals', signals);
             validator.addEnumValidator('signals', signals, ['sigc', 'qt']);
             validator.validate()
