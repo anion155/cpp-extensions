@@ -6,5 +6,6 @@ Project {
     ]
     references: [
         'cpp-extensions/CppExtensions.qbs',
+        'tests/tests.qbs',
     ]
 }
