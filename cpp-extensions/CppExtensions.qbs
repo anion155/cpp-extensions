@@ -1,44 +1,31 @@
 import qbs
-import 'Validators.js' as Validators
+import Validators
 
 Product {
-    id: cppextProduct
-    version: '0.1.1'
-    // type: [linkage + 'library']
-    // property string linkage: 'static'
-
     Depends { name: 'cpp' }
-    cpp.includePaths: [ './' ]
+    cpp.cxxLanguageVersion: 'c++11'
+    cpp.includePaths: cppextModule.includePaths
+    cpp.defines: cppextModule.defines
 
     files: [
         '**/*.h', '**/*.c',
         '**/*.hpp', '**/*.cpp',
     ]
 
-    property string signals: cppextModule.signals || 'sigc'
-    property string namespace: cppextModule.namespace
-
-    Depends { name: 'sigc'; condition: signals == 'sigc' }
-    Depends { name: 'Qt.core'; condition: signals == 'qt' }
-
-    cpp.defines: cppextModule.cpp.defines
-
     Export {
         id: cppextModule
-
-        Depends { name: 'cpp' }
-        cpp.includePaths: [ './' ]
+        version: '0.1.2'
 
         property string signals
         property string namespace
 
-        Depends { name: 'sigc'; condition: signals == 'sigc' }
-        Depends { name: 'Qt.core'; condition: signals == 'qt' }
-        cpp.defines: {
+        property pathList includePaths: [ '../' ]
+        property stringList defines: {
             var defs = [];
             switch (signals) {
             case 'sigc': defs.push('SIGNALS=SIGNALS_SIGC'); break;
             case 'qt': defs.push('SIGNALS=SIGNALS_QT'); break;
+            case 'no': defs.push('SIGNALS=NO_SIGNALS'); break;
             }
             if (typeof namespace !== 'undefined') {
                 if (namespace !== '') {
@@ -50,9 +37,19 @@ Product {
             return defs;
         }
 
+        Depends { name: 'sigc'; condition: signals == 'sigc' }
+        Depends { name: 'Qt.core'; condition: signals == 'qt' }
+
+        Depends { name: 'cpp' }
+        cpp.includePaths: includePaths
+        cpp.defines: defines
+
         validate: {
             var validator = new Validators.PropertyValidator('anion155-cpp-extensions');
-            validator.addRegexpValidator('namespace', namespace, /^[a-zA-Z_][a-zA-Z0-9_]*$/, 'Namespace must be valid identifier');
+            validator.addRegexpValidator(
+                        'namespace', namespace,
+                        /^([a-zA-Z_]([a-zA-Z0-9_]*::)?[a-zA-Z0-9_]*|)$/,
+                        'Namespace must be valid identifier or identifiers separated by \'::\'');
             validator.setRequiredProperty('signals', signals);
             validator.addEnumValidator('signals', signals, ['sigc', 'qt']);
             validator.validate()

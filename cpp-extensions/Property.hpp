@@ -1,7 +1,7 @@
 #pragma once
 
+#include "_defines.hpp"
 #include <utility>
-#include <cpp-extensions/extensions.hpp>
 
 #if IS_SIGNALS_SIGC
 # include <sigc++/sigc++.h>
@@ -9,7 +9,7 @@
 # include <QObject>
 #endif
 
-ANION155s_CPP_EXTENSIONS_NAMESPACE_BEGIN
+CE_NAMESPACE_BEGIN
 
 template <typename T>
 class Property
@@ -28,16 +28,19 @@ public:
   Property &operator=(const Property&) =delete;
 
   Property() { }
+  Property(const field_type &value) : m_field(value) { }
   Property(field_type &&value) : m_field(std::move(value)) { }
+  Property(Property &&p) : m_field(std::move(p.m_field)) { }
 
   Property &operator =(const field_type &value) { return set(value); }
   Property &operator =(field_type &&value) { return set(std::forward<field_type>(value)); }
 
+  field_type &get() { return m_field; }
   const field_type &get() const { return m_field; }
   Property &set(const field_type &value) {
     m_field = value;
 #if IS_SIGNALS_SIGC
-    s_changed(m_field);
+    s_changed.emit(m_field);
 #elif IS_SIGNALS_QT
     emit changed(m_field);
 #endif
@@ -46,7 +49,7 @@ public:
   Property &set(field_type &&value) {
     m_field = std::forward<field_type>(value);
 #if IS_SIGNALS_SIGC
-    s_changed(m_field);
+    s_changed.emit(m_field);
 #elif IS_SIGNALS_QT
     emit changed(m_field);
 #endif
@@ -96,4 +99,4 @@ public:
   void changed(field_type value) Q_SIGNAL;
 #endif
 };
-ANION155s_CPP_EXTENSIONS_NAMESPACE_END
+CE_NAMESPACE_END
