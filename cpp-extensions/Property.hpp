@@ -9,7 +9,7 @@
 # include <QObject>
 #endif
 
-ANION155s_CPP_EXTENSIONS_NAMESPACE_BEGIN
+CE_NAMESPACE_BEGIN
 
 template <typename T>
 class Property
@@ -35,6 +35,7 @@ public:
   Property &operator =(const field_type &value) { return set(value); }
   Property &operator =(field_type &&value) { return set(std::forward<field_type>(value)); }
 
+  field_type &get() { return m_field; }
   const field_type &get() const { return m_field; }
   Property &set(const field_type &value) {
     m_field = value;
@@ -98,4 +99,4 @@ public:
   void changed(field_type value) Q_SIGNAL;
 #endif
 };
-ANION155s_CPP_EXTENSIONS_NAMESPACE_END
+CE_NAMESPACE_END
