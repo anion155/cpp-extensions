@@ -2,6 +2,11 @@ import qbs
 import Validators
 
 Product {
+    Depends { name: 'cpp' }
+    cpp.cxxLanguageVersion: 'c++11'
+    cpp.includePaths: cppextModule.includePaths
+    cpp.defines: cppextModule.defines
+
     files: [
         '**/*.h', '**/*.c',
         '**/*.hpp', '**/*.cpp',
@@ -11,19 +16,16 @@ Product {
         id: cppextModule
         version: '0.1.1'
 
-        Depends { name: 'cpp' }
-        cpp.includePaths: [ '../' ]
-
         property string signals
         property string namespace
 
-        Depends { name: 'sigc'; condition: signals == 'sigc' }
-        Depends { name: 'Qt.core'; condition: signals == 'qt' }
-        cpp.defines: {
+        property pathList includePaths: [ '../' ]
+        property stringList defines: {
             var defs = [];
             switch (signals) {
             case 'sigc': defs.push('SIGNALS=SIGNALS_SIGC'); break;
             case 'qt': defs.push('SIGNALS=SIGNALS_QT'); break;
+            case 'no': defs.push('SIGNALS=NO_SIGNALS'); break;
             }
             if (typeof namespace !== 'undefined') {
                 if (namespace !== '') {
@@ -34,6 +36,13 @@ Product {
             }
             return defs;
         }
+
+        Depends { name: 'sigc'; condition: signals == 'sigc' }
+        Depends { name: 'Qt.core'; condition: signals == 'qt' }
+
+        Depends { name: 'cpp' }
+        cpp.includePaths: includePaths
+        cpp.defines: defines
 
         validate: {
             var validator = new Validators.PropertyValidator('anion155-cpp-extensions');

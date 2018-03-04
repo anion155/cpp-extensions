@@ -1,5 +1,5 @@
 #include <QObject>
-#include <cpp-extensions/extensions.hpp>
+#include <cpp-extensions/Property.hpp>
 #include <memory>
 
 class TestProperty: public QObject {
