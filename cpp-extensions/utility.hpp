@@ -17,6 +17,8 @@ public:
   operator std::string() {
     return m_stream.str();
   }
+  template<typename T>
+  operator T();
 
   template<typename T>
   ss &operator<<(const T &op) {
