@@ -4,8 +4,13 @@ Project {
     qbsSearchPaths: [
         'qbs/'
     ]
-    references: [
-        'cpp-extensions/CppExtensions.qbs',
-        'tests/tests.qbs',
-    ]
+    SubProject {
+        filePath: 'cpp-extensions/CppExtensions.qbs'
+    }
+    SubProject {
+        filePath: 'tests/tests.qbs'
+        Properties {
+            condition: false
+        }
+    }
 }

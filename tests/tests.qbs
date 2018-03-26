@@ -1,8 +1,6 @@
 import qbs
 
 CppApplication {
-    builtByDefault: false
-
     Depends { name: 'Qt.testlib' }
     Depends { name: 'CppExtensions' }
     CppExtensions.signals: 'sigc'
