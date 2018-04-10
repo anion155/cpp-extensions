@@ -1,4 +1,9 @@
-var ModUtils = require('qbs.ModUtils');
+var ModUtils;
+try {
+  ModUtils = require('qbs.ModUtils');
+} catch(error) {
+  ModUtils = loadExtension('qbs.ModUtils');
+}
 
 var PropertyValidator = (function (superClass) {
   function PropertyValidator(modulename) {
