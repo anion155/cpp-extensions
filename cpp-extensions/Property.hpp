@@ -2,6 +2,7 @@
 
 #include "_defines.hpp"
 #include <utility>
+#include <cpp-extensions/utility.hpp>
 
 #if IS_SIGNALS_SIGC
 # include <sigc++/sigc++.h>
@@ -27,6 +28,7 @@ public:
   Property(const Property &) =delete;
   Property &operator=(const Property&) =delete;
 
+  // FIXME: warn on `const Property<_Type>;`
   Property() { }
   Property(const field_type &value) : m_field(value) { }
   Property(field_type &&value) : m_field(std::move(value)) { }
@@ -99,4 +101,10 @@ public:
   void changed(field_type value) Q_SIGNAL;
 #endif
 };
+
+template <typename _Type>
+CE_NAMESPACE::ss &operator<<(CE_NAMESPACE::ss &that, const CE_NAMESPACE::Property<_Type> &obj) {
+    that << obj.get();
+    return that;
+}
 CE_NAMESPACE_END
