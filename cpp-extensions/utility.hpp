@@ -14,6 +14,12 @@ void UNUSED(Args&& ...args) {
 class ss {
   std::stringstream m_stream;
 public:
+  ss(bool boolalpha = true) {
+    if (boolalpha) {
+      m_stream << std::boolalpha;
+    }
+  }
+
   operator std::string() {
     return m_stream.str();
   }
